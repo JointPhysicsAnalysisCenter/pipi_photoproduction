@@ -1,0 +1,149 @@
+c
+c Copyright: See COPYING file that comes with this distribution
+c
+c------------------------------------------------------------------------
+      FUNCTION  GAUSS(F,A,B,EPS)
+C     ---->  calka f. rzeczywistej F, program przerobiony z CAUSSC - f. zesp.
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      EXTERNAL F
+      DIMENSION W(12),X(12)
+      DATA CONST /1.0D-12/
+C      DATA CONST /1.0D-13/      
+C      DATA CONST /1.0D-14/
+C      DATA CONST /1.0D-16/   NIE DZIALA
+C      DATA CONST /1.0D-15/
+      DATA W
+     1/0.10122 85362 9037 , 0.22238 10344 5337 , 0.31370 66458 7788 ,
+     2 0.36268 37833 7836 , 0.02715 24594 1175 , 0.06225 35239 3864 ,
+     3 0.09515 85116 8249 , 0.12462 89712 5553 , 0.14959 59888 1657 ,
+     4 0.16915 65193 9500 , 0.18260 34150 4492 , 0.18945 06104 5506 /
+      DATA X
+     1/0.96028 98564 9753 , 0.79666 64774 1362 , 0.52553 24099 1632 ,
+     2 0.18343 46424 9565 , 0.98940 09349 9165 , 0.94457 50230 7323 ,
+     3 0.86563 12023 8783 , 0.75540 44083 5500 , 0.61787 62444 0264 ,
+     4 0.45801 67776 5722 , 0.28160 35507 7925 , 0.09501 25098 3763 /
+      CZ=0.D0
+      DELTA=CONST*DABS(A-B)
+      GAUSS=CZ
+      AA=A
+    5 Y=B-AA
+      IF(DABS(Y) .LE. DELTA) RETURN
+    2 BB=AA+Y
+      C1=0.5D0*(AA+BB)
+      C2=C1-AA
+      S8=CZ
+      S16=CZ
+      DO 1 I=1,4
+      U=X(I)*C2
+    1 S8=S8+W(I)*(F(C1+U)+F(C1-U))
+      DO 3 I = 5,12
+      U=X(I)*C2
+    3 S16=S16+W(I)*(F(C1+U)+F(C1-U))
+      S8=S8*C2
+      S16=S16*C2
+      IF(DABS(S16-S8).GT.EPS*DABS(S16)) GO TO 4
+       GAUSS= GAUSS+S16
+      AA=BB
+      GO TO 5
+    4 Y=0.5D0*Y
+      IF(DABS(Y) .GT. DELTA) GO TO 2
+      write(2,7)
+       GAUSS=CZ
+      RETURN
+    7 FORMAT(1X,34HGAUSS...TOO HIGH ACCURACY REQUIRED)
+      END
+c----------------------------------------------------------------------------
+      FUNCTION  GAUSS2(F,A,B,EPS)
+C     ---->  calka f. rzeczywistej F, program przerobiony z CAUSSC - f. zesp.
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      EXTERNAL F
+      DIMENSION W(12),X(12)
+      DATA CONST /1.0D-12/
+      DATA W
+     1/0.10122 85362 9037 , 0.22238 10344 5337 , 0.31370 66458 7788 ,
+     2 0.36268 37833 7836 , 0.02715 24594 1175 , 0.06225 35239 3864 ,
+     3 0.09515 85116 8249 , 0.12462 89712 5553 , 0.14959 59888 1657 ,
+     4 0.16915 65193 9500 , 0.18260 34150 4492 , 0.18945 06104 5506 /
+      DATA X
+     1/0.96028 98564 9753 , 0.79666 64774 1362 , 0.52553 24099 1632 ,
+     2 0.18343 46424 9565 , 0.98940 09349 9165 , 0.94457 50230 7323 ,
+     3 0.86563 12023 8783 , 0.75540 44083 5500 , 0.61787 62444 0264 ,
+     4 0.45801 67776 5722 , 0.28160 35507 7925 , 0.09501 25098 3763 /
+      CZ=0.D0
+      DELTA=CONST*DABS(A-B)
+      GAUSS2=CZ
+      AA=A
+    5 Y=B-AA
+      IF(DABS(Y) .LE. DELTA) RETURN
+    2 BB=AA+Y
+      C1=0.5D0*(AA+BB)
+      C2=C1-AA
+      S8=CZ
+      S16=CZ
+      DO 1 I=1,4
+      U=X(I)*C2
+    1 S8=S8+W(I)*(F(C1+U)+F(C1-U))
+      DO 3 I = 5,12
+      U=X(I)*C2
+    3 S16=S16+W(I)*(F(C1+U)+F(C1-U))
+      S8=S8*C2
+      S16=S16*C2
+      IF(DABS(S16-S8).GT.EPS*DABS(S16)) GO TO 4
+       GAUSS2= GAUSS2+S16
+      AA=BB
+      GO TO 5
+    4 Y=0.5D0*Y
+      IF(DABS(Y) .GT. DELTA) GO TO 2
+      write(2,7)
+       GAUSS2=CZ
+      RETURN
+    7 FORMAT(1X,35HGAUSS2...TOO HIGH ACCURACY REQUIRED)
+      END
+
+      FUNCTION  GAUSSC(F,A,B,EPS)
+C     ---->  calka f. rzeczywistej F, program przerobiony z CAUSSC - f. zesp.
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      EXTERNAL F
+      COMPLEX*16 F,CZ,GAUSSC,S8,S16
+      DIMENSION W(12),X(12)
+      DATA CONST /1.0D-12/
+      DATA W
+     1/0.10122 85362 9037 , 0.22238 10344 5337 , 0.31370 66458 7788 ,
+     2 0.36268 37833 7836 , 0.02715 24594 1175 , 0.06225 35239 3864 ,
+     3 0.09515 85116 8249 , 0.12462 89712 5553 , 0.14959 59888 1657 ,
+     4 0.16915 65193 9500 , 0.18260 34150 4492 , 0.18945 06104 5506 /
+      DATA X
+     1/0.96028 98564 9753 , 0.79666 64774 1362 , 0.52553 24099 1632 ,
+     2 0.18343 46424 9565 , 0.98940 09349 9165 , 0.94457 50230 7323 ,
+     3 0.86563 12023 8783 , 0.75540 44083 5500 , 0.61787 62444 0264 ,
+     4 0.45801 67776 5722 , 0.28160 35507 7925 , 0.09501 25098 3763 /
+      CZ=cmplx(0.D0,0.d0)
+      DELTA=CONST*DABS(A-B)
+      GAUSSC=CZ
+      AA=A
+    5 Y=B-AA
+      IF(DABS(Y) .LE. DELTA) RETURN
+    2 BB=AA+Y
+      C1=0.5D0*(AA+BB)
+      C2=C1-AA
+      S8=CZ
+      S16=CZ
+      DO 1 I=1,4
+      U=X(I)*C2
+    1 S8=S8+W(I)*(F(C1+U)+F(C1-U))
+      DO 3 I = 5,12
+      U=X(I)*C2
+    3 S16=S16+W(I)*(F(C1+U)+F(C1-U))
+      S8=S8*C2
+      S16=S16*C2
+      IF(CDABS(S16-S8).GT.EPS*CDABS(S16)) GO TO 4
+       GAUSSC= GAUSSC+S16
+      AA=BB
+      GO TO 5
+    4 Y=0.5D0*Y
+      IF(DABS(Y) .GT. DELTA) GO TO 2
+      write(2,7)
+       GAUSSC=CZ
+      RETURN
+    7 FORMAT(1X,35HGAUSSC...TOO HIGH ACCURACY REQUIRED)
+      END
